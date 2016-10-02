@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>小宝的游戏</title>
+	<style type="text/css">
+		body {
+			margin-left: 50px;
+			margin-right: 50px;
+			margin-top: 20px;
+			margin-bottom: 20px;
+			background: #85ae54 url(images/background.png);
+			background-repeat: no-repeat;
+		}
+	</style>
+	<script type="text/javascript">
+		var canvas;
+		var context;
+		var margin_x = 50;
+		var margin_y = 20;
+
+		// State images
+		var imgGood = new Image();
+		var imgBad = new Image();
+		var imgWin = new Image();
+		var imgLose = new Image();
+		imgGood.src = "images/good.png";
+		imgBad.src = "images/bad.png";
+		imgWin.src = "images/win.png";
+		imgLose.src = "images/lose.png";
+
+		// Chess images
+		var imgArray = new Array(6);
+		for (var i = 0; i < imgArray.length; i++) {
+			imgArray[i] = new Image();
+		}
+		imgArray[0].src = "images/girl.png";
+		imgArray[1].src = "images/storeberry.png";
+		imgArray[2].src = "images/pizza.png";
+		imgArray[3].src = "images/boy.png";
+		imgArray[4].src = "images/grape.png";
+		imgArray[5].src = "images/pineapple.png";
+
+		var chessData = new Array(8);
+		var countGood;
+		var countBad;
+
+		function init() {
+			// Create the canvas
+			canvas = document.getElementById("canvas");
+			context = canvas.getContext("2d");
+
+			for (var x = 0; x < 8; x++) {
+				chessData[x] = new Array(8);
+				for (var y = 0; y < 8; y++) {
+					// chess[x][y] has random index of imgArray
+					chessData[x][y] = Math.floor(Math.random() * 6);
+					context.drawImage(imgArray[chessData[x][y]], x * 100, y * 100);
+				}
+			}
+
+			countGood = 0;
+			countBad = 0;
+		}
+
+		// sleep time expects milliseconds
+		function sleep(time) {
+			return new Promise((resolve) => setTimeout(resolve, time));
+		}
+
+		//鼠标点击时发生
+		function play(e) {
+			//计算鼠标点击的区域，如果点击了（100，100），那么就是点击了（1，1）的位置
+			var x = parseInt((e.clientX - margin_x) / 100);
+			var y = parseInt((e.clientY - margin_y) / 100);
+
+			if (chessData[x][y] < 3) {
+				context.drawImage(imgGood, x * 100, y * 100);
+				countGood++;
+			} else {
+				context.drawImage(imgBad, x * 100, y * 100);
+				countBad++;
+			}
+
+			// 检查输赢
+			if (countGood >= 8) {
+				context.drawImage(imgWin, 0, 0);
+				sleep(3000).then(() => {
+					init();
+				});
+			} else if (countBad >= 8) {
+				context.drawImage(imgLose, 0, 0);
+				sleep(3000).then(() => {
+					init();
+				});
+			}
+		}
+	</script>
+</head>
+
+<body onload="init()">
+	<div>
+		<canvas width="800" id="canvas" onmousedown="play(event)" height="800">
+			你的浏览器不支持HTML5 canvas  ，请使用 google chrome 浏览器 打开.
+		</canvas>
+	</div>
+</body>
+
+</html>
