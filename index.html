@@ -72,8 +72,8 @@
 		//鼠标点击时发生
 		function play(e) {
 			//计算鼠标点击的区域，如果点击了（100，100），那么就是点击了（1，1）的位置
-			var x = parseInt((e.clientX - margin_x) / 100);
-			var y = parseInt((e.clientY - margin_y) / 100);
+			var x = parseInt((window.pageXOffset + e.clientX - margin_x) / 100);
+			var y = parseInt((window.pageYOffset + e.clientY - margin_y) / 100);
 
 			if (chessData[x][y] < 3) {
 				context.drawImage(imgGood, x * 100, y * 100);
